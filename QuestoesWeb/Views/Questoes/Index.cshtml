@@ -1,0 +1,112 @@
+@model QuestoesWeb.Models.QuestaoViewModel
+
+@{
+    ViewData["Title"] = $"Questão {Model.Ordem}";
+
+    var total = (int?)ViewBag.TotalQuestoes ?? 0;
+    var proximaOrdem = Model.Ordem + 1;
+    var anteriorOrdem = Model.Ordem - 1;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Questão @Model.Ordem</h2>
+        @if (total > 0)
+        {
+            <span class="text-muted">de @total</span>
+        }
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <p class="card-text fs-5">@Model.Enunciado</p>
+
+            @* Vídeo original da plataforma (Vimeo) – ocultado para evitar erro de privacidade *@
+            @* 
+        @if (!string.IsNullOrWhiteSpace(Model.VideoEmbed))
+{
+    <div class="ratio ratio-16x9 my-3">
+        @Html.Raw(Model.VideoEmbed)
+    </div>
+}
+*@
+        </div>
+    </div>
+
+    <form asp-action="Responder" method="post">
+        <input type="hidden" name="ordem" value="@Model.Ordem" />
+        <div class="list-group mb-3">
+            @foreach (var resposta in Model.Respostas)
+            {
+                var isSelected = Model.RespostaSelecionadaId == resposta.IdResposta;
+                var isCorrect = resposta.EhCorreta;
+
+                var itemClasses = "list-group-item list-group-item-action";
+
+                if (Model.EstaCorreta is not null && isSelected)
+                {
+                    itemClasses += Model.EstaCorreta.Value
+                        ? " list-group-item-success"
+                        : " list-group-item-danger";
+                }
+                else if (Model.EstaCorreta is not null && isCorrect)
+                {
+                    itemClasses += " list-group-item-success";
+                }
+
+                <label class="@itemClasses">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="respostaSelecionadaId"
+                               value="@resposta.IdResposta"
+                               @(isSelected ? "checked" : "") />
+                        <span class="form-check-label">
+                            @resposta.Texto
+                        </span>
+                    </div>
+                </label>
+            }
+        </div>
+
+        <div class="d-flex gap-2 mb-3">
+            <button type="submit" class="btn btn-primary">
+                Verificar resposta
+            </button>
+
+            @if (Model.EstaCorreta is not null)
+            {
+                <span class="align-self-center">
+                    @if (Model.EstaCorreta.Value)
+                    {
+                        <span class="text-success fw-bold">Correto!</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger fw-bold">Resposta incorreta.</span>
+                    }
+                </span>
+            }
+        </div>
+    </form>
+
+    <div class="d-flex justify-content-between">
+        @if (anteriorOrdem > 0)
+        {
+            <a asp-action="Index" asp-route-ordem="@anteriorOrdem" class="btn btn-outline-secondary">
+                &laquo; Questão anterior
+            </a>
+        }
+        else
+        {
+            <span></span>
+        }
+
+        @if (total == 0 || proximaOrdem <= total)
+        {
+            <a asp-action="Index" asp-route-ordem="@proximaOrdem" class="btn btn-outline-secondary">
+                Próxima questão &raquo;
+            </a>
+        }
+    </div>
+</div>
+
+
