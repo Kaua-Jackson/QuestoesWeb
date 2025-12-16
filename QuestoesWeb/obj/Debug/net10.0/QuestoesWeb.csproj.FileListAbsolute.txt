@@ -96,3 +96,4 @@ C:\Users\Windows\RiderProjects\QuestoesWeb\QuestoesWeb\obj\Debug\net10.0\refint\
 C:\Users\Windows\RiderProjects\QuestoesWeb\QuestoesWeb\obj\Debug\net10.0\QuestoesWeb.pdb
 C:\Users\Windows\RiderProjects\QuestoesWeb\QuestoesWeb\obj\Debug\net10.0\QuestoesWeb.genruntimeconfig.cache
 C:\Users\Windows\RiderProjects\QuestoesWeb\QuestoesWeb\obj\Debug\net10.0\ref\QuestoesWeb.dll
+C:\Users\Windows\RiderProjects\QuestoesWeb\QuestoesWeb\obj\Debug\net10.0\QuestoesWeb.sourcelink.json

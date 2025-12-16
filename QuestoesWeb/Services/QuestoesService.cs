@@ -7,8 +7,15 @@ public interface IQuestoesService
 {
     Task<IReadOnlyList<QuestaoViewModel>> ObterQuestoesAsync(CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyList<QuestaoViewModel>> ObterQuestoesAleatoriasAsync(CancellationToken cancellationToken = default);
+
     Task<QuestaoViewModel?> ObterQuestaoPorOrdemAsync(
         int ordem,
+        CancellationToken cancellationToken = default);
+
+    Task<QuestaoViewModel?> ObterQuestaoPorIndiceAsync(
+        int indice,
+        IReadOnlyList<QuestaoViewModel> questoes,
         CancellationToken cancellationToken = default);
 }
 
@@ -73,6 +80,16 @@ public sealed class QuestoesService(
         return questoes;
     }
 
+    public async Task<IReadOnlyList<QuestaoViewModel>> ObterQuestoesAleatoriasAsync(
+        CancellationToken cancellationToken = default)
+    {
+        var questoes = await ObterQuestoesAsync(cancellationToken);
+
+        return questoes
+            .OrderBy(_ => Random.Shared.Next())
+            .ToList();
+    }
+
     public async Task<QuestaoViewModel?> ObterQuestaoPorOrdemAsync(
         int ordem,
         CancellationToken cancellationToken = default)
@@ -81,6 +98,17 @@ public sealed class QuestoesService(
 
         return questoes.FirstOrDefault(q => q.Ordem == ordem);
     }
+
+    public Task<QuestaoViewModel?> ObterQuestaoPorIndiceAsync(
+        int indice,
+        IReadOnlyList<QuestaoViewModel> questoes,
+        CancellationToken cancellationToken = default)
+    {
+        if (indice < 0 || indice >= questoes.Count)
+        {
+            return Task.FromResult<QuestaoViewModel?>(null);
+        }
+
+        return Task.FromResult<QuestaoViewModel?>(questoes[indice]);
+    }
 }
-
-
